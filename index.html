@@ -1,0 +1,779 @@
+html_content = """<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoGenius AI - Trova la tua Moto Ideale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --bg-card: #151c2c;
+            --bg-input: #1e2640;
+            --accent: #ff5e00;
+            --accent-hover: #e05300;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: #27314f;
+            --success: #10b981;
+            
+            --badge-am: #10b981;
+            --badge-a1: #3b82f6;
+            --badge-a2: #8b5cf6;
+            --badge-a: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header e Navbar Spaziale */
+        header {
+            background: linear-gradient(135deg, #111827 0%, var(--bg-main) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .logo-container h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(90deg, #fff 30%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-container p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* Layout Principale */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 14fr 10fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sezioni/Card Comuni */
+        .panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 1.8rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-title span.icon {
+            color: var(--accent);
+        }
+
+        /* Sezione 1: Ricerca Assistita Intellegente */
+        .ai-search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--text-main);
+            font-size: 1rem;
+            resize: none;
+            transition: all 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(255, 94, 0, 0.2);
+        }
+
+        /* Sezione 2: Filtri tradizionali */
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.8rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Pulsanti di Ottimizzazione Speciali */
+        .smart-sorters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border);
+        }
+
+        .btn-smart {
+            background-color: rgba(255, 94, 0, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(255, 94, 0, 0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-smart:hover, .btn-smart.active {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(255, 94, 0, 0.3);
+        }
+
+        .btn-reset {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .btn-reset:hover {
+            border-color: var(--text-muted);
+            color: var(--text-main);
+        }
+
+        /* Tabella Leaderboard delle Moto */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: rgba(30, 38, 64, 0.4);
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 1.1rem 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        .moto-name {
+            font-weight: 700;
+            color: white;
+            font-size: 1.05rem;
+        }
+
+        .moto-brand {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-am { background-color: rgba(16, 185, 129, 0.15); color: var(--badge-am); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-a1 { background-color: rgba(59, 130, 246, 0.15); color: var(--badge-a1); border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge-a2 { background-color: rgba(139, 92, 246, 0.15); color: var(--badge-a2); border: 1px solid rgba(139, 92, 246, 0.3); }
+        .badge-a { background-color: rgba(239, 68, 68, 0.15); color: var(--badge-a); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        .price-tag {
+            font-weight: 800;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .spec-info {
+            font-size: 0.9rem;
+        }
+
+        /* Sezione Chat IA */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 520px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background-color: rgba(11, 15, 25, 0.5);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .chat-msg {
+            max-width: 85%;
+            padding: 0.8rem 1rem;
+            border-radius: 14px;
+            font-size: 0.95rem;
+        }
+
+        .chat-msg.bot {
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .chat-msg.user {
+            background-color: var(--accent);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .chip {
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+
+        .chip:hover {
+            border-color: var(--accent);
+            color: white;
+            background-color: rgba(255, 94, 0, 0.05);
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.8rem;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn-send {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0 1.2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-send:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .ai-badge-inline {
+            background: linear-gradient(90deg, #ff5e00, #ffaa00);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 1px 5px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <h1>MOTO-GENIUS <span style="color:var(--accent);">AI</span></h1>
+            <p>La guida intelligente definitiva per scegliere la tua prossima moto</p>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <main>
+            <div class="panel">
+                <div class="panel-title">
+                    <span class="icon">🔍</span> Assistente di Ricerca Ibrido
+                </div>
+
+                <div class="filter-group" style="margin-bottom: 1.2rem;">
+                    <label>Modo 1: Descrivi cosa stai cercando <span class="ai-badge-inline">IA Integrata</span></label>
+                    <textarea id="aiInput" placeholder="Es: Voglio una moto comoda per viaggiare in due nel fine settimana, che si guidi con patente A2 e non costi un'esagerazione... oppure 'una naked cattiva per divertirmi in curva'"></textarea>
+                </div>
+
+                <div class="filter-group"><label style="margin-bottom:0.4rem;">Modo 2: Ricerca con Filtri Precisi</label></div>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="filterPatente">Patente</label>
+                        <select id="filterPatente">
+                            <option value="ALL">Tutte le Patenti</option>
+                            <option value="AM">AM (Scooter/50cc)</option>
+                            <option value="A1">A1 (125cc - 16 anni)</option>
+                            <option value="A2">A2 (Fino a 35 kW - 18 anni)</option>
+                            <option value="A">A (Senza limiti)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filterStyle">Stile Moto</label>
+                        <select id="filterStyle">
+                            <option value="ALL">Tutti gli stili</option>
+                            <option value="Naked">Naked</option>
+                            <option value="Sportiva">Sportiva</option>
+                            <option value="Touring">Crossover / Touring</option>
+                            <option value="Motard">Motard</option>
+                            <option value="Scooter">Scooter</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filterBudget">Budget Massimo</label>
+                        <select id="filterBudget">
+                            <option value="ALL">Qualsiasi prezzo</option>
+                            <option value="4000">Sotto i 4.000 €</option>
+                            <option value="7000">Sotto i 7.000 €</option>
+                            <option value="10000">Sotto i 10.000 €</option>
+                            <option value="15000">Sotto i 15.000 €</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="smart-sorters">
+                    <button class="btn-smart" id="smartCheapest">💰 La Più Economica</button>
+                    <button class="btn-smart" id="smartPowerful">⚡ Max Potenza Consentita</button>
+                    <button class="btn-reset" id="btnReset">Reset Filtri</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">
+                    <span class="icon">🏍️</span> Modelli Pertinenti Trovati (<span id="matchCount">0</span>)
+                </div>
+                
+                <div class="table-container">
+                    <table id="motoTable">
+                        <thead>
+                            <tr>
+                                <th>Modello / Marca</th>
+                                <th>Patente</th>
+                                <th>Tipologia</th>
+                                <th>Specifiche</th>
+                                <th>Prezzo di Listino</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            </tbody>
+                    </table>
+                    <div id="noResults" class="no-results" style="display:none;">
+                        Nessuna moto corrisponde perfettamente ai filtri selezionati. Prova a modificarli!
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <div class="panel chat-container">
+                <div class="panel-title">
+                    <span class="icon">🤖</span> MotoGenius AI Chat
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-msg bot">
+                        Ciao! Sono l'assistente virtuale di MotoGenius. Chiedimi qualsiasi cosa sulle patenti, sulle differenze tecniche (es. "Cos'è l'ABS?") o un consiglio sul modello perfetto per te!
+                    </div>
+                </div>
+
+                <div class="chat-suggestions">
+                    <div class="chip" onclick="quickQuestion('Quale moto posso guidare a 18 anni?')">Cosa guido a 18 anni?</div>
+                    <div class="chip" onclick="quickQuestion('Meglio un motore bicilindrico o monocilindrico?')">Bicilindrico vs Mono</div>
+                    <div class="chip" onclick="quickQuestion('Cosa cambia tra kW e CV?')">kW vs CV</div>
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Fai una domanda banale o chiedi consiglio...">
+                    <button class="btn-send" id="btnSendChat">Invia</button>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <script>
+        // DATABASE INTERNO DI MOTO COMPLETO (Simula il fetching dal web strutturato)
+        const motoDatabase = [
+            { brand: "Vespa", model: "Primavera 50", license: "AM", style: "Scooter", cc: 49, power: 3, price: 3990, tags: ["citta", "economico", "scooter", "comodo", "casa lavoro", "classico", "vespa", "principiante"] },
+            { brand: "Beta", model: "RR 50 Motard", license: "AM", style: "Motard", cc: 49, power: 4, price: 3500, tags: ["divertente", "marce", "motard", "agile", "ragazzi", "leggera", "due tempi"] },
+            { brand: "KTM", model: "Duke 125", license: "A1", style: "Naked", cc: 125, power: 11, price: 5500, tags: ["naked", "sportivo", "ragazzi", "agile", "scattante", "aggressivo", "giovani"] },
+            { brand: "Yamaha", model: "YZF-R125", license: "A1", style: "Sportiva", cc: 125, power: 11, price: 5800, tags: ["pista", "carenata", "sportiva", "corsa", "velocita", "piega"] },
+            { brand: "Honda", model: "SH125i", license: "A1", style: "Scooter", cc: 125, power: 9, price: 3800, tags: ["citta", "casa lavoro", "scooter", "ruote alte", "bauletto", "comodo", "consumi bassi"] },
+            { brand: "Yamaha", model: "MT-07 (Depotenziata)", license: "A2", style: "Naked", cc: 689, power: 35, price: 7900, tags: ["naked", "potente", "divertente", "coppia", "versatile", "sound", "bicilindrico"] },
+            { brand: "Honda", model: "CB500X / NX500", license: "A2", style: "Touring", cc: 471, power: 35, price: 7300, tags: ["viaggio", "avventura", "crossover", "comoda", "turismo", "autostrada", "due persone", "affidabile"] },
+            { brand: "Kawasaki", model: "Ninja 400", license: "A2", style: "Sportiva", cc: 399, power: 33, price: 6500, tags: ["sportiva", "carenata", "pista", "leggera", "maneggevole", "giri domenicali"] },
+            { brand: "Benelli", model: "TRK 502", license: "A2", style: "Touring", cc: 500, power: 35, price: 5990, tags: ["turismo", "imponente", "viaggio", "borse", "protettiva", "economico", "gigante"] },
+            { brand: "Ducati", model: "Monster", license: "A", style: "Naked", cc: 937, power: 82, price: 12300, tags: ["naked", "potente", "rossa", "sound", "sportiva", "prestazioni", "desmo", "veloce"] },
+            { brand: "BMW", model: "R 1250 GS", license: "A", style: "Touring", cc: 1254, power: 100, price: 20500, tags: ["viaggio", "premium", "boxer", "turismo", "comoda", "il top", "autostrada", "indistruttibile"] },
+            { brand: "Yamaha", model: "YZF-R1", license: "A", style: "Sportiva", cc: 998, power: 147, price: 20000, tags: ["pista", "velocissima", "estrema", "4 cilindri", "superbike", "adrenalina", "corsa"] },
+            { brand: "Harley-Davidson", model: "Iron 883", license: "A", style: "Custom", cc: 883, power: 38, price: 11500, tags: ["custom", "passeggiata", "sella bassa", "relax", "cromo", "tranquillo", "customizer"] }
+        ];
+
+        // Stato dei filtri attivi
+        let activeSort = null; // 'cheapest' o 'powerful'
+
+        // Elementi DOM
+        const tableBody = document.getElementById('tableBody');
+        const matchCount = document.getElementById('matchCount');
+        const noResults = document.getElementById('noResults');
+        const aiInput = document.getElementById('aiInput');
+        const filterPatente = document.getElementById('filterPatente');
+        const filterStyle = document.getElementById('filterStyle');
+        const filterBudget = document.getElementById('filterBudget');
+        const smartCheapest = document.getElementById('smartCheapest');
+        const smartPowerful = document.getElementById('smartPowerful');
+        const btnReset = document.getElementById('btnReset');
+
+        // FUNZIONE DI FILTRAGGIO CORE (Sfrutta logica classica + IA semantica locale)
+        function filterBikes() {
+            const aiText = aiInput.value.toLowerCase().trim();
+            const patente = filterPatente.value;
+            const style = filterStyle.value;
+            const budget = filterBudget.value;
+
+            // Suddividi le parole dell'input libero per creare un matching pseudo-IA intelligente
+            const aiWords = aiText.split(/\s+/).filter(w => w.length > 2);
+
+            let filtered = motoDatabase.filter(moto => {
+                // Filtro Patente tradizionale
+                if (patente !== "ALL" && moto.license !== patente) return false;
+                
+                // Filtro Stile tradizionale
+                if (style !== "ALL" && moto.style !== style) return false;
+                
+                // Filtro Budget tradizionale
+                if (budget !== "ALL" && moto.price > parseInt(budget)) return false;
+
+                // Accoppiamento descrittivo IA Libero
+                if (aiWords.length > 0) {
+                    // Controlla quanti tag o parole chiave corrispondono alla descrizione dell'utente
+                    let matchScore = 0;
+                    aiWords.forEach(word => {
+                        // Cerca corrispondenza parziale nei tag, nel modello, nella marca o nello stile
+                        if (moto.tags.some(tag => tag.includes(word)) || 
+                            moto.brand.toLowerCase().includes(word) || 
+                            moto.model.toLowerCase().includes(word) ||
+                            moto.style.toLowerCase().includes(word)) {
+                            matchScore++;
+                        }
+                    });
+                    // Se l'utente ha scritto qualcosa ma questa moto non ha alcuna attinenza, la scartiamo
+                    if (matchScore === 0) return false;
+                }
+
+                return true;
+            });
+
+            // Applicazione dei Filtri Speciali Richiesti (Meno Costosa / Più Potente secondo limiti patente)
+            if (activeSort === 'cheapest') {
+                // Ordina per prezzo crescente (quella che costa meno)
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (activeSort === 'powerful') {
+                // Ordina per potenza decrescente (la più potente nei limiti)
+                filtered.sort((a, b) => b.power - a.power);
+            }
+
+            renderTable(filtered);
+        }
+
+        // Rendering grafico della Tabella Leaderboard
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            matchCount.textContent = data.length;
+
+            if (data.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            noResults.style.display = 'none';
+
+            data.forEach(moto => {
+                const tr = document.createElement('tr');
+                
+                // Determina la classe badge appropriata per la patente
+                const badgeClass = `badge-${moto.license.toLowerCase()}`;
+
+                tr.innerHTML = `
+                    <td>
+                        <div class="moto-name">${moto.brand} ${moto.model}</div>
+                        <div class="moto-brand">${moto.cc} cc • Raf. Liquido</div>
+                    </td>
+                    <td><span class="badge ${badgeClass}">${moto.license}</span></td>
+                    <td><span style="color: var(--text-main); font-weight:500;">${moto.style}</span></td>
+                    <td>
+                        <div class="spec-info">💪 <b>${moto.power} kW</b> (${Math.round(moto.power * 1.34)} CV)</div>
+                        <div class="spec-info" style="color:var(--text-muted); font-size:0.8rem;">Rapporto peso/potenza ottimizzato</div>
+                    </td>
+                    <td><div class="price-tag">${moto.price.toLocaleString('it-IT')} €</div></td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Event Listeners per i controlli di ricerca
+        aiInput.addEventListener('input', filterBikes);
+        filterPatente.addEventListener('change', filterBikes);
+        filterStyle.addEventListener('change', filterBikes);
+        filterBudget.addEventListener('change', filterBikes);
+
+        // Gestione filtri speciali
+        smartCheapest.addEventListener('click', () => {
+            if (activeSort === 'cheapest') {
+                activeSort = null;
+                smartCheapest.classList.remove('active');
+            } else {
+                activeSort = 'cheapest';
+                smartCheapest.classList.add('active');
+                smartPowerful.classList.remove('active');
+            }
+            filterBikes();
+        });
+
+        smartPowerful.addEventListener('click', () => {
+            if (activeSort === 'powerful') {
+                activeSort = null;
+                smartPowerful.classList.remove('active');
+            } else {
+                activeSort = 'powerful';
+                smartPowerful.classList.add('active');
+                smartCheapest.classList.remove('active');
+            }
+            filterBikes();
+        });
+
+        btnReset.addEventListener('click', () => {
+            aiInput.value = '';
+            filterPatente.value = 'ALL';
+            filterStyle.value = 'ALL';
+            filterBudget.value = 'ALL';
+            activeSort = null;
+            smartCheapest.classList.remove('active');
+            smartPowerful.classList.remove('active');
+            filterBikes();
+        });
+
+
+        // LOGICA MOTO-CHAT INTELLIGENTE (Simulatore di risposte esperte e consigli dedicati)
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const btnSendChat = document.getElementById('btnSendChat');
+
+        function appendMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('chat-msg', sender);
+            msgDiv.innerText = text;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function handleChat() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            appendMessage(text, 'user');
+            chatInput.value = '';
+
+            // Genera risposta esperta automatica basata sul contenuto
+            setTimeout(() => {
+                const reply = generateAiReply(text);
+                appendMessage(reply, 'bot');
+            }, 600);
+        }
+
+        function quickQuestion(questionText) {
+            appendMessage(questionText, 'user');
+            setTimeout(() => {
+                const reply = generateAiReply(questionText);
+                appendMessage(reply, 'bot');
+            }, 500);
+        }
+
+        function generateAiReply(input) {
+            const clean = input.toLowerCase();
+            
+            if (clean.includes('18 anni') || clean.includes('patente a2')) {
+                return "A 18 anni puoi conseguire la patente A2! Questa patente ti permette di guidare moto con una potenza massima di 35 kW (circa 48 CV) e un rapporto peso/potenza non superiore a 0,2 kW/kg. Nel nostro catalogo, modelli come la Yamaha MT-07 depotenziata o la Honda CB500X sono perfetti per questa categoria.";
+            }
+            if (clean.includes('bicilindrico') || clean.includes('monocilindrico') || clean.includes('differenza motore')) {
+                return "Ottima domanda! Un motore monocilindrico (1 solo cilindro) è leggero, scattante ai bassi regimi ed economico nei consumi, ideale per motard ed enduro (es. Beta 50 o KTM 125). Un bicilindrico (2 cilindri) è più fluido, vibra meno ed è perfetto per fare viaggi in autostrada a velocità costanti, come sulla Honda CB500X.";
+            }
+            if (clean.includes('kw') || clean.includes('cv') || clean.includes('potenza')) {
+                return "Il kW (Chilowatt) è l'unità di misura ufficiale della potenza nel sistema internazionale (usata anche sui libretti di circolazione). I CV (Cavalli Vapore) sono la vecchia unità ma ancora la più usata commercialmente. La conversione è semplicissima: 1 kW corrisponde a circa 1,36 CV. Per esempio, il limite della A2 di 35 kW equivale a 48 CV!";
+            }
+            if (clean.includes('viaggiare') || clean.includes('comoda') || clean.includes('viaggio')) {
+                return "Se desideri viaggiare ti consiglio caldamente i modelli 'Touring / Crossover'. Hanno una seduta eretta, protezione dal vento sul parabrezza e la possibilità di montare valigie. Guarda la Honda CB500X (NX500) o la Benelli TRK 502 se hai la patente A2, oppure l'iconica BMW R 1250 GS se hai la patente A senza limiti.";
+            }
+            if (clean.includes('consiglio') || clean.includes('iniziare') || clean.includes('prima moto')) {
+                return "Per iniziare, la regola d'oro è: leggerezza e fluidità. Una moto Naked sotto i 400cc o una stradale tranquilla sono ideali. Se hai almeno 18 anni, la Kawasaki Ninja 400 o la Yamaha MT-07 depotenziata offrono una ciclistica sincera che perdona gli errori dei neofiti senza farti rinunciare al divertimento.";
+            }
+            if (clean.includes('abs') || clean.includes('freni')) {
+                return "L'ABS (Anti-lock Braking System) è il sistema anti-bloccaggio dei freni. È obbligatorio per legge su tutte le moto sopra i 125cc dal 2016. Evita che le ruote si blocchino durante una frenata improvvisa o sul bagnato, impedendo la caduta. È il sistema di sicurezza più importante su una moto, fondamentale per chi inizia!";
+            }
+
+            return "Interessante! Questa è una domanda tecnica molto valida. Ti consiglio di valutare bene il peso complessivo della moto e l'altezza della sella se stai iniziando. Prova ad usare i filtri qui a sinistra impostando la tua patente per vedere i modelli esatti con i relativi prezzi di listino aggiornati!";
+        }
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleChat();
+        });
+        btnSendChat.addEventListener('click', handleChat);
+
+        // Avvio Iniziale caricando tutte le moto disponibili
+        filterBikes();
+    </script>
+</body>
+</html>
+"""
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+print("File generato con successo.")
