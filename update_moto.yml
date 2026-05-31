@@ -1,0 +1,28 @@
+name: Robot Aggiornamento Moto
+on:
+  schedule:
+    - cron: '0 3 * * *' # Si attiva da solo OGNI NOTTE alle 3:00 AM
+  workflow_dispatch: # Ti permette di attivarlo anche a mano con un bottone su GitHub
+
+jobs:
+  auto-update:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Accedi al codice
+      uses: actions/checkout@v4
+
+    - name: Configura Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Esegui il Robot Scraper
+      run: python scraper.py
+
+    - name: Salva le modifiche sul sito
+      run: |
+        git config --global user.name "MotoRobot"
+        git config --global user.email "robot@motogenius.ai"
+        git add moto.json
+        git commit -m "🤖 Aggiornamento automatico dei prezzi di mercato" || exit 0
+        git push
